@@ -1,0 +1,40 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/config.schema.json",
+  "grammars": [
+    {
+      "name": "cnf",
+      "camelcase": "Cnf",
+      "title": "cnf",
+      "scope": "source.cnf",
+      "file-types": [
+        "cnf"
+      ],
+      "injection-regex": "^cnf$",
+      "class-name": "TreeSitterCnf",
+      "highlights": "queries/highlights.scm"
+    }
+  ],
+  "metadata": {
+    "version": "0.1.0",
+    "license": "MIT",
+    "description": "cnf grammar for tree-sitter",
+    "authors": [
+      {
+        "name": "Canonical Ltd"
+      }
+    ],
+    "links": {
+      "repository": "https://github.com/canonical/tree-sitter-cnf"
+    }
+  },
+  "bindings": {
+    "c": true,
+    "go": true,
+    "node": true,
+    "python": true,
+    "rust": true,
+    "swift": false,
+    "java": false,
+    "zig": false
+  }
+}

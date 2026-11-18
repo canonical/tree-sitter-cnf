@@ -1,0 +1,286 @@
+====================
+Standalone and inline comments
+====================
+
+# a.pre
+a:
+    # a.head
+
+    b: 1 # b.in
+
+    # a.foot
+# a.post
+
+---
+
+(document
+  (comment)
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (comment)
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (number)
+          (comment))
+        (comment)))
+    (comment)))
+
+====================
+Inline comments after every kind of value
+====================
+
+a: 1 # a
+b: [5]	# b
+c: {f: 6} # c
+d: " # x" # d
+e: ''' # x''' # e
+f:
+    ---
+    7 # f
+    ---
+g:
+    - 8 # g
+    - m: 9 # m
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (number)
+      (comment))
+    (pair
+      (path
+        (bare_key))
+      (list
+        (number))
+      (comment))
+    (pair
+      (path
+        (bare_key))
+      (map
+        (pair
+          (path
+            (bare_key))
+          (number)))
+      (comment))
+    (pair
+      (path
+        (bare_key))
+      (double_quoted_string
+        (string_content))
+      (comment))
+    (pair
+      (path
+        (bare_key))
+      (single_fenced_string
+        (string_content))
+      (comment))
+    (pair
+      (path
+        (bare_key))
+      (fenced_list
+        (number)
+        (comment)))
+    (pair
+      (path
+        (bare_key))
+      (block_list
+        (list_item
+          (number)
+          (comment))
+        (list_item
+          (pair
+            (path
+              (bare_key))
+            (number))
+          (comment))))))
+
+====================
+Comments between dashed list items
+====================
+
+a:
+    # head
+    - "b"
+    # between
+
+    - "c"
+    # foot
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (comment)
+      (block_list
+        (list_item
+          (double_quoted_string
+            (string_content)))
+        (comment)
+        (list_item
+          (double_quoted_string
+            (string_content)))
+        (comment)))))
+
+====================
+Comments inside a fenced list
+====================
+
+list:
+    ---
+    # pre
+    a:
+        b: 1
+    # post
+    ---
+    # tail
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (fenced_list
+        (comment)
+        (block_map
+          (pair
+            (path
+              (bare_key))
+            (block_map
+              (pair
+                (path
+                  (bare_key))
+                (number))))
+          (comment))
+        (comment)))))
+
+====================
+Comments closing blocks
+====================
+
+a:
+    b:
+        c: 1
+        # c.post
+    # b.post
+# a.post
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (block_map
+            (pair
+              (path
+                (bare_key))
+              (number))
+            (comment)))
+        (comment)))
+    (comment)))
+
+====================
+Comment glued to a value
+:error
+====================
+
+a: 1#x
+
+---
+
+
+
+====================
+Comment in place of a value
+:error
+====================
+
+a: # c
+    b: 1
+
+---
+
+
+
+====================
+Comment-only block
+:error
+====================
+
+a:
+    # comment
+
+---
+
+
+
+====================
+Comment deeper than its block
+:error
+====================
+
+a:
+    b: 1
+      # deeper
+
+---
+
+
+
+====================
+Comment shallower than its block
+:error
+====================
+
+a:
+  # shallower
+    b: 1
+
+---
+
+
+
+====================
+Indented top-level comment
+:error
+====================
+
+  # deeper
+a: 1
+
+---
+
+
+
+====================
+Comment between key and fence
+:error
+====================
+
+a:
+    # cmt
+    '''
+    x
+    '''
+
+---
+
+

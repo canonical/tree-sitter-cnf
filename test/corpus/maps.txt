@@ -1,0 +1,534 @@
+====================
+Simple pairs
+====================
+
+name: "now"
+timeout: 30
+enabled: true
+verbose: false
+nothing: null
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (double_quoted_string
+        (string_content)))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (true))
+    (pair
+      (path
+        (bare_key))
+      (false))
+    (pair
+      (path
+        (bare_key))
+      (null))))
+
+====================
+Dotted paths
+====================
+
+a.b: 1
+a.c.d: 2
+a.c."e f": 3
+'path'."with space": 4
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key)
+        (bare_key)
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key)
+        (bare_key)
+        (double_quoted_string
+          (string_content)))
+      (number))
+    (pair
+      (path
+        (single_quoted_string
+          (string_content))
+        (double_quoted_string
+          (string_content)))
+      (number))))
+
+====================
+Keys that look like values
+====================
+
+-: 1
+---: 2
+1.5: 3
+true: 4
+-1: 5
+0x1F.null: 6
+"": 7
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (double_quoted_string))
+      (number))))
+
+====================
+Inline maps
+====================
+
+inline: {a: 1, b: 2}
+quoted: {"c d": 2}
+path: {ab."c d": 3}
+empty: {}
+nested: {a: {b: [1, {c: null}]}}
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (map
+        (pair
+          (path
+            (bare_key))
+          (number))
+        (pair
+          (path
+            (bare_key))
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (map
+        (pair
+          (path
+            (double_quoted_string
+              (string_content)))
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (map
+        (pair
+          (path
+            (bare_key)
+            (double_quoted_string
+              (string_content)))
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (map))
+    (pair
+      (path
+        (bare_key))
+      (map
+        (pair
+          (path
+            (bare_key))
+          (map
+            (pair
+              (path
+                (bare_key))
+              (list
+                (number)
+                (map
+                  (pair
+                    (path
+                      (bare_key))
+                    (null)))))))))))
+
+====================
+Block maps
+====================
+
+a:
+    b:
+        c:
+            d: 1
+            e: 2
+        f: 3
+    g:
+        h: 4
+    j: 6
+k:
+    l: 7
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (block_map
+            (pair
+              (path
+                (bare_key))
+              (block_map
+                (pair
+                  (path
+                    (bare_key))
+                  (number))
+                (pair
+                  (path
+                    (bare_key))
+                  (number))))
+            (pair
+              (path
+                (bare_key))
+              (number))))
+        (pair
+          (path
+            (bare_key))
+          (block_map
+            (pair
+              (path
+                (bare_key))
+              (number))))
+        (pair
+          (path
+            (bare_key))
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (number))))))
+
+====================
+Sibling blocks at different indents
+====================
+
+a:
+    x: 1
+b:
+        y: 2
+c: 3
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (number))))
+
+====================
+Tab indentation
+====================
+
+a:
+	b:
+		c: 1
+	d: 2
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (block_map
+            (pair
+              (path
+                (bare_key))
+              (number))))
+        (pair
+          (path
+            (bare_key))
+          (number))))))
+
+====================
+Blank lines and trailing padding
+====================
+
+a:   
+
+    b: 1  
+	
+    c: 2
+
+
+d: 3
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (block_map
+        (pair
+          (path
+            (bare_key))
+          (number))
+        (pair
+          (path
+            (bare_key))
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (number))))
+
+====================
+No padding around values
+====================
+
+a:1
+b:{c:1,d:[]}
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (map
+        (pair
+          (path
+            (bare_key))
+          (number))
+        (pair
+          (path
+            (bare_key))
+          (list))))))
+
+====================
+Pair without a value
+:error
+====================
+
+a:
+
+---
+
+
+
+====================
+Pair without a colon
+:error
+====================
+
+a
+
+---
+
+
+
+====================
+Bare word as a value
+:error
+====================
+
+a: bare
+
+---
+
+
+
+====================
+Space inside a path
+:error
+====================
+
+a .b: 1
+
+---
+
+
+
+====================
+Space before the colon
+:error
+====================
+
+a.b : 1
+
+---
+
+
+
+====================
+Empty key segment
+:error
+====================
+
+a..b: 1
+
+---
+
+
+
+====================
+Trailing comma in an inline map
+:error
+====================
+
+a: {b: 1,}
+
+---
+
+
+
+====================
+Inline map across lines
+:error
+====================
+
+a: {b: 1,
+c: 2}
+
+---
+
+
+
+====================
+Inline value in block position
+:error
+====================
+
+m:
+    1
+
+---
+
+
+
+====================
+Deeper line inside a block
+:error
+====================
+
+a:
+    b: 1
+      c: 2
+
+---
+
+
+
+====================
+Dedent to a prefix that is no ancestor
+:error
+====================
+
+a:
+    b:
+        c: 1
+  d: 2
+
+---
+
+
+
+====================
+Mixed tabs and spaces
+:error
+====================
+
+a:
+    b:
+    	c: 1
+
+---
+
+
+
+====================
+Unindented block value
+:error
+====================
+
+a:
+- 1
+
+---
+
+

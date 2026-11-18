@@ -1,0 +1,324 @@
+====================
+Inline lists
+====================
+
+inline: [[1, 2], [3, 4]]
+empty: []
+maps: [{label: "first"}, {label: "second"}]
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (list
+        (list
+          (number)
+          (number))
+        (list
+          (number)
+          (number))))
+    (pair
+      (path
+        (bare_key))
+      (list))
+    (pair
+      (path
+        (bare_key))
+      (list
+        (map
+          (pair
+            (path
+              (bare_key))
+            (double_quoted_string
+              (string_content))))
+        (map
+          (pair
+            (path
+              (bare_key))
+            (double_quoted_string
+              (string_content))))))))
+
+====================
+Dashed list
+====================
+
+block:
+    - "first item"
+    - 2
+    - -3
+    - [4, 5]
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (block_list
+        (list_item
+          (double_quoted_string
+            (string_content)))
+        (list_item
+          (number))
+        (list_item
+          (number))
+        (list_item
+          (list
+            (number)
+            (number)))))))
+
+====================
+Dashed list of pairs
+====================
+
+block.maps:
+    - label: "first map"
+    - a.b: {c: 1}
+    - 1.5: 2
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (block_list
+        (list_item
+          (pair
+            (path
+              (bare_key))
+            (double_quoted_string
+              (string_content))))
+        (list_item
+          (pair
+            (path
+              (bare_key)
+              (bare_key))
+            (map
+              (pair
+                (path
+                  (bare_key))
+                (number)))))
+        (list_item
+          (pair
+            (path
+              (bare_key)
+              (bare_key))
+            (number)))))))
+
+====================
+Fenced list
+====================
+
+block:
+    ---
+    - 1
+    ---
+    a: 1
+    b:
+        c: 2
+    ---
+    "inline"
+    ---
+    '''
+    ---
+    '''
+    ---
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (fenced_list
+        (block_list
+          (list_item
+            (number)))
+        (block_map
+          (pair
+            (path
+              (bare_key))
+            (number))
+          (pair
+            (path
+              (bare_key))
+            (block_map
+              (pair
+                (path
+                  (bare_key))
+                (number)))))
+        (double_quoted_string
+          (string_content))
+        (single_fenced_string
+          (string_content))))))
+
+====================
+Nested fenced lists
+====================
+
+lists:
+    ---
+        ---
+        - 1
+        ---
+        - 2
+        - 3
+        ---
+    ---
+        ---
+        d: 4
+        ---
+    ---
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (fenced_list
+        (fenced_list
+          (block_list
+            (list_item
+              (number)))
+          (block_list
+            (list_item
+              (number))
+            (list_item
+              (number))))
+        (fenced_list
+          (block_map
+            (pair
+              (path
+                (bare_key))
+              (number))))))))
+
+====================
+Dash without a value
+:error
+====================
+
+block:
+    -
+
+---
+
+
+
+====================
+Dashed pair without a value
+:error
+====================
+
+block:
+    - a:
+
+---
+
+
+
+====================
+Nested dashes
+:error
+====================
+
+- - 1
+
+---
+
+
+
+====================
+Missing list separator
+:error
+====================
+
+a: [1 2]
+
+---
+
+
+
+====================
+Unclosed inline list
+:error
+====================
+
+a: [1, 2
+
+---
+
+
+
+====================
+Trailing comma in an inline list
+:error
+====================
+
+a: [1, 2,]
+
+---
+
+
+
+====================
+Empty fenced list element
+:error
+====================
+
+---
+---
+
+---
+
+
+
+====================
+Unclosed fenced list
+:error
+====================
+
+---
+1
+
+---
+
+
+
+====================
+Fenced list element deeper than its fence
+:error
+====================
+
+l:
+    ---
+        - 1
+    ---
+
+---
+
+
+
+====================
+Blank line between key and fenced list
+:error
+====================
+
+l:
+
+    ---
+    1
+    ---
+
+---
+
+

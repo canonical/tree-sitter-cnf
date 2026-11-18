@@ -1,0 +1,202 @@
+====================
+Empty file
+====================
+
+
+---
+
+(document)
+
+====================
+Comments only
+====================
+
+# one
+
+# two
+
+---
+
+(document
+  (comment)
+  (comment))
+
+====================
+Top-level number
+====================
+
+42
+
+---
+
+(document
+  (number))
+
+====================
+Top-level negative number is not a list item
+====================
+
+-1
+
+---
+
+(document
+  (number))
+
+====================
+Top-level string holding a colon
+====================
+
+"a:b"
+
+---
+
+(document
+  (double_quoted_string
+    (string_content)))
+
+====================
+Top-level keywords with comments
+====================
+
+# before
+null # trail
+# after
+
+---
+
+(document
+  (comment)
+  (null)
+  (comment)
+  (comment))
+
+====================
+Top-level inline map
+====================
+
+{a: 1, b: 2}
+
+---
+
+(document
+  (map
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))))
+
+====================
+Top-level inline list
+====================
+
+[1, 2]
+
+---
+
+(document
+  (list
+    (number)
+    (number)))
+
+====================
+Top-level dashed list
+====================
+
+- "one"
+- "two"
+
+---
+
+(document
+  (block_list
+    (list_item
+      (double_quoted_string
+        (string_content)))
+    (list_item
+      (double_quoted_string
+        (string_content)))))
+
+====================
+Top-level fenced list
+====================
+
+---
+- "first list"
+---
+- "second list"
+---
+
+---
+
+(document
+  (fenced_list
+    (block_list
+      (list_item
+        (double_quoted_string
+          (string_content))))
+    (block_list
+      (list_item
+        (double_quoted_string
+          (string_content))))))
+
+====================
+Top-level fenced string
+====================
+
+'''
+line one
+line two
+'''
+
+---
+
+(document
+  (single_fenced_string
+    (string_content)))
+
+====================
+Leading blank lines and no final newline
+====================
+
+
+
+  
+a: 1
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (number))))
+
+====================
+Content after the top-level value
+:error
+====================
+
+1
+2
+
+---
+
+
+
+====================
+Indented top-level value
+:error
+====================
+
+  """
+  a
+  """
+
+---
+
+

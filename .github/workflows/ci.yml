@@ -1,0 +1,44 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Test (${{matrix.os}})
+    runs-on: ${{matrix.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v7
+
+      # Pinned to the version that generated src/parser.c, so that the
+      # "generated parser is up to date" check compares like with like.
+      - name: Set up the tree-sitter CLI
+        uses: tree-sitter/setup-action/cli@v2
+        with:
+          tree-sitter-ref: v0.27.1
+
+      # Regenerates the parser and fails on a diff (Linux only), runs
+      # test/corpus, then builds and tests each binding.
+      - name: Build and test
+        uses: tree-sitter/parser-test-action@v3
+        with:
+          generate: ${{runner.os == 'Linux'}}
+          test-rust: true
+          test-node: true
+          test-python: true
+          test-go: true
+          go-version: "1.27"

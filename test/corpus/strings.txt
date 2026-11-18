@@ -1,0 +1,364 @@
+====================
+Quoted strings
+====================
+
+double: "line one\nline two"
+single: 'line one\nstill one'
+empty.double: ""
+empty.single: ''
+quotes: "has 'single' quotes"
+more: 'has "double" quotes'
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (double_quoted_string
+        (string_content)
+        (escape_sequence)
+        (string_content)))
+    (pair
+      (path
+        (bare_key))
+      (single_quoted_string
+        (string_content)))
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (double_quoted_string))
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (single_quoted_string))
+    (pair
+      (path
+        (bare_key))
+      (double_quoted_string
+        (string_content)))
+    (pair
+      (path
+        (bare_key))
+      (single_quoted_string
+        (string_content)))))
+
+====================
+Escape sequences
+====================
+
+a: "\\ \" \n \r \t \b \f \x41 \u0041 \u{2713} \u{10FFFF}"
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (double_quoted_string
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)))))
+
+====================
+One-line fenced strings
+====================
+
+double: """line one\nline "two"\""""
+single: '''it's one\nline'''
+empty.double: """"""
+empty.single: ''''''
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (double_fenced_string
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)))
+    (pair
+      (path
+        (bare_key))
+      (single_fenced_string
+        (string_content)))
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (double_fenced_string))
+    (pair
+      (path
+        (bare_key)
+        (bare_key))
+      (single_fenced_string))))
+
+====================
+Fenced string blocks
+====================
+
+script:
+    """
+    #!/bin/sh
+    echo "not today"
+    """
+raw:
+    '''
+    it's
+      me\n
+    '''
+empty:
+    """
+    """
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (double_fenced_string
+        (string_content)))
+    (pair
+      (path
+        (bare_key))
+      (single_fenced_string
+        (string_content)))
+    (pair
+      (path
+        (bare_key))
+      (double_fenced_string))))
+
+====================
+Escapes in a fenced string block
+====================
+
+s:
+    """
+    \tone \
+    two\
+    """
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (double_fenced_string
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)
+        (string_content)
+        (escape_sequence)))))
+
+====================
+Other delimiter and blank lines inside a fenced string block
+====================
+
+s:
+    """
+    before
+
+    '''
+  
+      """
+    after
+    """
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (double_fenced_string
+        (string_content)))))
+
+====================
+Unclosed double quote
+:error
+====================
+
+a: "hi
+
+---
+
+
+
+====================
+Unclosed single quote
+:error
+====================
+
+a: 'hi
+
+---
+
+
+
+====================
+Unclosed one-line fence
+:error
+====================
+
+a: """hi
+
+---
+
+
+
+====================
+Unknown escape
+:error
+====================
+
+a: "c:\dir"
+
+---
+
+
+
+====================
+Unknown escape in a fenced string block
+:error
+====================
+
+a:
+    """
+    bad \d escape
+    """
+
+---
+
+
+
+====================
+Surrogate escape
+:error
+====================
+
+a: "\uD800"
+
+---
+
+
+
+====================
+Escape above U+10FFFF
+:error
+====================
+
+a: "\u{110000}"
+
+---
+
+
+
+====================
+Quote after a one-line fence
+:error
+====================
+
+a: '''it''''
+
+---
+
+
+
+====================
+Control character in a string
+:error
+====================
+
+a: "bad"
+
+---
+
+
+
+====================
+Unclosed fenced string block
+:error
+====================
+
+a:
+    """
+    x
+
+---
+
+
+
+====================
+Fenced string block line at a shallower prefix
+:error
+====================
+
+a:
+    """
+    one
+  two
+    """
+
+---
+
+
+
+====================
+Blank line between key and fenced string
+:error
+====================
+
+a:
+
+    """
+    x
+    """
+
+---
+
+
+
+====================
+Comment after a fence delimiter
+:error
+====================
+
+a:
+    ''' # trail
+    x
+    '''
+
+---
+
+

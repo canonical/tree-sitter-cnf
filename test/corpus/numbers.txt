@@ -1,0 +1,125 @@
+====================
+Number spellings
+====================
+
+int: 123
+float: 1.23
+hex: 0x2F
+octal: 0o77
+binary: 0b11
+exponent: 1e-23
+plus: 1.5e+5
+negative: -1.5
+minus-zero: -0
+signed-hex: -0x1f
+
+---
+
+(document
+  (block_map
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))
+    (pair
+      (path
+        (bare_key))
+      (number))))
+
+====================
+Redundant leading zero
+:error
+====================
+
+a: 02
+
+---
+
+
+
+====================
+Uppercase exponent
+:error
+====================
+
+a: 1E5
+
+---
+
+
+
+====================
+Hex prefix without digits
+:error
+====================
+
+a: 0x
+
+---
+
+
+
+====================
+Digit out of base
+:error
+====================
+
+a: 0o8
+
+---
+
+
+
+====================
+Leading dot
+:error
+====================
+
+a: .5
+
+---
+
+
+
+====================
+Trailing dot
+:error
+====================
+
+a: 5.
+
+---
+
+
